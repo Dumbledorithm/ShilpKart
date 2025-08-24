@@ -1,14 +1,34 @@
 import Product from '../models/productModel.js';
 
-// @desc    Fetch all products
+// @desc    Fetch all approved products with search and pagination
 // @route   GET /api/products
 // @access  Public
 const getProducts = async (req, res) => {
   try {
-    // We only want to show approved products to the public
-    const products = await Product.find({ isApproved: true });
-    res.json(products);
+    const pageSize = 8; // We will show 8 products per page
+    const page = Number(req.query.pageNumber) || 1;
+
+    const keyword = req.query.keyword
+      ? {
+          name: {
+            $regex: req.query.keyword,
+            $options: 'i', // 'i' for case-insensitive search
+          },
+        }
+      : {};
+
+    // First, count all the documents that match the keyword
+    const count = await Product.countDocuments({ ...keyword, isApproved: true });
+
+    // Then, find the products for the specific page
+    const products = await Product.find({ ...keyword, isApproved: true })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+
+    // Return the products for the page, the current page number, and the total number of pages
+    res.json({ products, page, pages: Math.ceil(count / pageSize) });
   } catch (error) {
+    console.error('ERROR IN getProducts:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -19,21 +39,19 @@ const getProducts = async (req, res) => {
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-
-    // Ensure the fetched product is approved before sending it back
     if (product && product.isApproved) {
       res.json(product);
     } else {
       res.status(404).json({ message: 'Product not found or not approved' });
     }
   } catch (error) {
+    console.error('ERROR IN getProductById:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
 
 
-
-// --- (Existing getProducts and getProductById functions are here) ---
+// --- ARTISAN CONTROLLERS ---
 
 // @desc    Get logged in artisan's products
 // @route   GET /api/products/myproducts
@@ -53,7 +71,6 @@ const getMyProducts = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const { name, price, description, image, category, countInStock } = req.body;
-
     const product = new Product({
       name,
       price,
@@ -62,9 +79,7 @@ const createProduct = async (req, res) => {
       category,
       countInStock,
       description,
-      // isApproved is false by default
     });
-
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
@@ -80,13 +95,8 @@ const updateProduct = async (req, res) => {
     const { name, price, description, image, category, countInStock } = req.body;
     const product = await Product.findById(req.params.id);
 
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    // Check if the product belongs to the artisan trying to update it
-    if (product.user.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: 'Not authorized' });
+    if (!product || product.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: 'Product not found or not authorized' });
     }
 
     product.name = name || product.name;
@@ -94,9 +104,8 @@ const updateProduct = async (req, res) => {
     product.description = description || product.description;
     product.image = image || product.image;
     product.category = category || product.category;
-    product.countInStock = countInStock || product.countInStock;
-    // When an artisan updates a product, it should go back to pending approval
-    product.isApproved = false; 
+    product.countInStock = countInStock ?? product.countInStock;
+    product.isApproved = false;
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
@@ -112,33 +121,29 @@ const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+    if (!product || product.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: 'Product not found or not authorized' });
     }
 
-    // Check if the product belongs to the artisan trying to delete it
-    if (product.user.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-
-    await product.remove();
+    await Product.deleteOne({ _id: req.params.id });
     res.json({ message: 'Product removed' });
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
   }
 };
 
+
+// --- ADMIN CONTROLLERS ---
+
 // @desc    Get all products (admin view)
 // @route   GET /api/products/all
 // @access  Private/Admin
 const getAllProducts = async (req, res) => {
-  console.log('--- ENTERING getAllProducts CONTROLLER ---'); // --- ADD THIS ---
-
   try {
     const products = await Product.find({}).populate('user', 'name');
     res.json(products);
   } catch (error) {
-     console.error('ERROR IN getAllProducts:', error);
+    console.error('ERROR IN getAllProducts:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 };
@@ -149,7 +154,6 @@ const getAllProducts = async (req, res) => {
 const approveProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-
     if (product) {
       product.isApproved = true;
       const updatedProduct = await product.save();
@@ -163,13 +167,13 @@ const approveProduct = async (req, res) => {
 };
 
 
-export { 
-  getProducts, 
-  getProductById, 
-  getMyProducts, 
-  createProduct, 
-  updateProduct, 
+export {
+  getProducts,
+  getProductById,
+  getMyProducts,
+  createProduct,
+  updateProduct,
   deleteProduct,
   getAllProducts,
-  approveProduct
+  approveProduct,
 };

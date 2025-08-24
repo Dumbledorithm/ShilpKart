@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-
-// Components, Layout & Pages
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
 import CustomAlert from './components/CustomAlert';
@@ -116,6 +114,9 @@ function App() {
           <Routes>
             {/* --- Public Routes --- */}
             <Route path="/" element={<HomePage />} />
+            <Route path="/page/:pageNumber" element={<HomePage />} />
+            <Route path="/search/:keyword" element={<HomePage />} />
+            <Route path="/search/:keyword/page/:pageNumber" element={<HomePage />} />
             <Route path="/product/:id" element={<ProductPage onAddToCart={handleAddToCart} />} />
             <Route path="/login" element={<LoginPage onLoginSuccess={handleLoginSuccess} />} />
             <Route path="/signup" element={<SignupPage onLoginSuccess={handleLoginSuccess} />} />

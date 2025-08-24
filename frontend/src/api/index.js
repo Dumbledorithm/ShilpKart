@@ -13,7 +13,8 @@ API.interceptors.request.use((req) => {
 });
 
 // --- Product APIs ---
-export const fetchProducts = () => API.get('/products');
+
+export const fetchProducts = (keyword = '', pageNumber = 1) => API.get(`/products?keyword=${keyword}&pageNumber=${pageNumber}`);
 export const fetchProductById = (id) => API.get(`/products/${id}`);
 
 // --- Auth APIs ---
