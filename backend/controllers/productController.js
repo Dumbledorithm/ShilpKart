@@ -121,8 +121,12 @@ const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
-    if (!product || product.user.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: 'Product not found or not authorized' });
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+// Allow deletion if the user is the owner OR if the user is an admin
+    if (product.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(401).json({ message: 'Not authorized' });
     }
 
     await Product.deleteOne({ _id: req.params.id });

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { fetchAllUsers, verifyArtisan, fetchAllProducts, approveProduct } from '../api';
+import { fetchAllUsers, verifyArtisan, fetchAllProducts, approveProduct, rejectArtisan, rejectProduct } from '../api';
 
 const AdminDashboard = ({ user }) => {
   const [users, setUsers] = useState([]);
@@ -42,6 +42,18 @@ const AdminDashboard = ({ user }) => {
     }
   };
 
+  const handleRejectArtisan = async (userId) => {
+    if (window.confirm('Are you sure you want to reject and delete this artisan application? This action cannot be undone.')) {
+      try {
+        await rejectArtisan(userId);
+        setUsers(users.filter(u => u._id !== userId));
+        alert('Artisan application rejected and user removed.');
+      } catch (err) {
+        alert('Failed to reject artisan.');
+      }
+    }
+  };
+
   const handleApproveProduct = async (productId) => {
     try {
       await approveProduct(productId);
@@ -49,6 +61,18 @@ const AdminDashboard = ({ user }) => {
       alert('Product approved!');
     } catch (err) {
       alert('Failed to approve product.');
+    }
+  };
+
+  const handleRejectProduct = async (productId) => {
+    if (window.confirm('Are you sure you want to reject and delete this product? This action cannot be undone.')) {
+      try {
+        await rejectProduct(productId);
+        setProducts(products.filter(p => p._id !== productId));
+        alert('Product rejected and removed.');
+      } catch (err) {
+        alert('Failed to reject product.');
+      }
     }
   };
 
@@ -93,7 +117,10 @@ const AdminDashboard = ({ user }) => {
                         <h3 className="font-semibold">{artisan.artisanDetails.shopName}</h3>
                         <p className="text-sm text-muted-foreground">{artisan.name}</p>
                       </div>
-                      <Button size="sm" onClick={() => handleVerifyArtisan(artisan._id)}>Verify</Button>
+                      <div className="flex items-center gap-2">
+                        <Button size="sm" onClick={() => handleVerifyArtisan(artisan._id)}>Verify</Button>
+                        <Button size="sm" variant="destructive" onClick={() => handleRejectArtisan(artisan._id)}>Reject</Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -123,7 +150,10 @@ const AdminDashboard = ({ user }) => {
                             <p className="text-sm text-muted-foreground">by {product.user?.name || 'N/A'}</p>
                           </div>
                         </div>
-                      <Button size="sm" onClick={() => handleApproveProduct(product._id)}>Approve</Button>
+                      <div className="flex items-center gap-2">
+                        <Button size="sm" onClick={() => handleApproveProduct(product._id)}>Approve</Button>
+                        <Button size="sm" variant="destructive" onClick={() => handleRejectProduct(product._id)}>Reject</Button>
+                      </div>
                     </div>
                   ))}
                 </div>

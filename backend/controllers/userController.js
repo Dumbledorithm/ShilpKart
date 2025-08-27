@@ -108,5 +108,20 @@ const verifyArtisan = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
 
-export { authUser, registerUser, getUserProfile, getUsers, verifyArtisan };
+    if (user) {
+      await User.deleteOne({ _id: user._id });
+      res.json({ message: 'User removed' });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('ERROR IN deleteUser:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+export { authUser, registerUser, getUserProfile, getUsers, verifyArtisan, deleteUser };

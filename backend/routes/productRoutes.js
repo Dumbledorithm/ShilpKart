@@ -29,6 +29,5 @@ router.route('/:id').get(getProductById);
 // --- Dynamic artisan routes ---
 router.route('/:id')
   .put(protect, artisan, updateProduct)
-  .delete(protect, artisan, deleteProduct);
-
+  .delete(protect, admin, deleteProduct);
 export default router;

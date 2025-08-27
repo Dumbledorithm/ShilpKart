@@ -36,3 +36,14 @@ export const fetchAllUsers = () => API.get('/users');
 export const verifyArtisan = (id) => API.put(`/users/${id}/verify`);
 export const fetchAllProducts = () => API.get('/products/all');
 export const approveProduct = (id) => API.put(`/products/${id}/approve`);
+export const rejectArtisan = (id) => API.delete(`/users/${id}`);
+export const uploadImage = (file) => {
+  const formData = new FormData();
+  formData.append('image', file);
+  return API.post('/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+export const rejectProduct = (id) => deleteProduct(id);
