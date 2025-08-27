@@ -2,13 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchProducts } from '../api';
 import { Button } from '@/components/ui/button';
-import BentoGrid from '../components/BentoGrid'; 
+import BentoGrid from '../components/BentoGrid';
+import Marquee from '@/components/Marquee';
 
 const HomePage = () => {
   const { keyword, pageNumber } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const craftForms = [
+    "Madhubani Painting",
+    "Block Printing",
+    "Blue Pottery",
+    "Handloom Weaving",
+    "Warli Art",
+    "Terracotta Crafts",
+    "Pashmina Shawls",
+  ];
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -44,6 +55,9 @@ const HomePage = () => {
           <Button size="lg">Explore Crafts</Button>
         </div>
       </section>
+       <div className="mt-8">
+        <Marquee items={craftForms} />
+      </div>
 
       {/* Products Section */}
       <div className="mt-12">
