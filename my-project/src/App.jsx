@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 // Components, Layout & Pages
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
 import CustomAlert from './components/CustomAlert';
 import HomePage from './pages/HomePage';
 import ProductPage from './pages/ProductPage';
+import MyOrdersPage from './pages/MyOrdersPage';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -72,7 +74,7 @@ function App() {
       }
       return [...prevCart, { ...productToAdd, qty: 1 }];
     });
-    showAlert('Success!', `${productToAdd.name} has been added to the cart.`);
+    toast.success(`${productToAdd.name} has been added to the cart.`);
   };
 
   const handleUpdateQuantity = (productId, newQuantity) => {
@@ -130,6 +132,11 @@ function App() {
                 <CheckoutPage cart={cart} onPlaceOrder={handlePlaceOrder} />
               </ProtectedRoute>
             }/>
+            <Route path="/my-orders" element={
+              <ProtectedRoute user={user}>
+                <MyOrdersPage />
+              </ProtectedRoute>
+            }/>
             <Route path="/dashboard/artisan" element={
               <ProtectedRoute user={user} requiredRole="artisan">
                 <ArtisanDashboard user={user} />
@@ -147,6 +154,7 @@ function App() {
             }/>
           </Routes>
         </main>
+        <Toaster richColors />
         {/* Render the alert component globally */}
         <CustomAlert
           isOpen={alertInfo.isOpen}

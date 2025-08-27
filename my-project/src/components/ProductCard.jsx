@@ -1,10 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart } from 'lucide-react';
 
 const ProductCard = ({ product }) => (
+  <motion.div
+    initial = {{opacity:0,y:20}}
+    animate = {{ opacity:1, y:0}}
+    transition = {{duration:0.5}}  
+  >
   <Card className="overflow-hidden group border-none shadow-none rounded-lg">
     <Link to={`/product/${product._id}`} className="outline-none">
       <div className="overflow-hidden aspect-square bg-secondary rounded-lg relative">
@@ -27,6 +33,7 @@ const ProductCard = ({ product }) => (
       </div>
     </CardContent>
   </Card>
+  </motion.div>
 );
 
 export default ProductCard;

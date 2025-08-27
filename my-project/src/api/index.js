@@ -23,6 +23,7 @@ export const signupUser = (formData) => API.post('/users', formData);
 
 // --- Order APIs ---
 export const createOrder = (orderData) => API.post('/orders', orderData);
+export const fetchMyOrders = () => API.get('/orders/myorders');
 
 // --- Artisan Product APIs ---
 export const fetchMyProducts = () => API.get('/products/myproducts');

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ShoppingCart, User as UserIcon, LogOut, LayoutDashboard, ShieldCheck } from 'lucide-react';
 
 const Header = ({ cartItemCount, user, onLogout }) => {
@@ -14,13 +15,11 @@ const Header = ({ cartItemCount, user, onLogout }) => {
   return (
     <header className="bg-card border-b sticky top-0 z-50">
       <nav className="container mx-auto px-4 sm:px-6 h-20 flex justify-between items-center">
-        {/* Left: Logo */}
         <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-foreground hover:opacity-80 transition-opacity">
           <ShoppingCart className="h-8 w-8 text-primary" />
           <span>ShilpKart</span>
         </Link>
 
-        {/* Right: Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
           <Link to="/cart">
             <Button variant="ghost" size="icon" className="relative">
@@ -34,28 +33,34 @@ const Header = ({ cartItemCount, user, onLogout }) => {
           </Link>
           
           {user ? (
-            <div className="flex items-center gap-2 sm:gap-4">
-              {/* Admin Button */}
-              {user.isAdmin && (
-                <Link to="/dashboard/admin">
-                  <Button variant="outline">
-                    <ShieldCheck className="mr-2 h-4 w-4" /> Admin Panel
-                  </Button>
-                </Link>
-              )}
-              {/* Artisan Button */}
-              {user.isArtisan && !user.isAdmin && (
-                <Link to="/dashboard/artisan">
-                  <Button variant="outline">
-                    <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
-                  </Button>
-                </Link>
-              )}
-              
-              <Button variant="ghost" size="icon" onClick={handleLogoutClick} title="Logout">
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <UserIcon className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>Hi, {user.name.split(' ')[0]}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/my-orders">My Orders</Link>
+                </DropdownMenuItem>
+                {user.isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard/admin">Admin Panel</Link>
+                  </DropdownMenuItem>
+                )}
+                {user.isArtisan && !user.isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard/artisan">Artisan Dashboard</Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogoutClick} className="text-destructive">
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Link to="/login">
               <Button>
@@ -70,14 +75,6 @@ const Header = ({ cartItemCount, user, onLogout }) => {
 };
 
 export default Header;
-
-
-
-
-
-
-
-
 
 
 
