@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 // Components, Layout & Pages
 import Header from './components/Header';
 import ProtectedRoute from './components/ProtectedRoute';
 import CustomAlert from './components/CustomAlert';
 import HomePage from './pages/HomePage';
 import ProductPage from './pages/ProductPage';
-import MyOrdersPage from './pages/MyOrdersPage';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -16,32 +14,31 @@ import CheckoutPage from './pages/CheckoutPage';
 import ArtisanDashboard from './pages/ArtisanDashboard';
 import AddProductPage from './pages/AddProductPage';
 import AdminDashboard from './pages/AdminDashboard';
+import MyOrdersPage from './pages/MyOrdersPage';
+import EditProductPage from './pages/EditProductPage';
+import BecomeArtisanPage from './pages/BecomeArtisanPage';
 
 // API
 import { createOrder } from './api';
 
 function App() {
   const [cart, setCart] = useState([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser] =  useState(null);
 
-  // State for our custom alert
   const [alertInfo, setAlertInfo] = useState({
     isOpen: false,
     title: '',
     description: '',
   });
 
-  // Function to show the alert
   const showAlert = (title, description) => {
     setAlertInfo({ isOpen: true, title, description });
   };
 
-  // Function to close the alert
   const closeAlert = () => {
     setAlertInfo({ isOpen: false, title: '', description: '' });
   };
 
-  // On initial load, check if user info is in localStorage
   useEffect(() => {
     const userInfo = localStorage.getItem('userInfo');
     if (userInfo) {
@@ -57,7 +54,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('userInfo');
     setUser(null);
-    setCart([]); // Clear cart on logout
+    setCart([]);
   };
 
   const handleAddToCart = (productToAdd) => {
@@ -74,7 +71,7 @@ function App() {
       }
       return [...prevCart, { ...productToAdd, qty: 1 }];
     });
-    toast.success(`${productToAdd.name} has been added to the cart.`);
+    showAlert('Success!', `${productToAdd.name} has been added to the cart.`);
   };
 
   const handleUpdateQuantity = (productId, newQuantity) => {
@@ -137,6 +134,11 @@ function App() {
                 <MyOrdersPage />
               </ProtectedRoute>
             }/>
+            <Route path="/become-artisan" element={
+              <ProtectedRoute user={user}>
+                <BecomeArtisanPage onLoginSuccess={handleLoginSuccess} />
+              </ProtectedRoute>
+            }/>
             <Route path="/dashboard/artisan" element={
               <ProtectedRoute user={user} requiredRole="artisan">
                 <ArtisanDashboard user={user} />
@@ -147,6 +149,11 @@ function App() {
                 <AddProductPage />
               </ProtectedRoute>
             }/>
+            <Route path="/dashboard/artisan/edit/:id" element={
+              <ProtectedRoute user={user} requiredRole="artisan">
+                <EditProductPage />
+              </ProtectedRoute>
+            }/>
             <Route path="/dashboard/admin" element={
               <ProtectedRoute user={user} requiredRole="admin">
                 <AdminDashboard user={user} />
@@ -154,8 +161,6 @@ function App() {
             }/>
           </Routes>
         </main>
-        <Toaster richColors />
-        {/* Render the alert component globally */}
         <CustomAlert
           isOpen={alertInfo.isOpen}
           onClose={closeAlert}

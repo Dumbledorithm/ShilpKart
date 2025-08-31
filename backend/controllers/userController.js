@@ -1,9 +1,6 @@
 import User from '../models/userModel.js';
 import generateToken from '../utils/generateToken.js';
 
-// @desc    Auth user & get token (Login)
-// @route   POST /api/users/login
-// @access  Public
 const authUser = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -80,7 +77,6 @@ const getUserProfile = async (req, res) => {
 // @route   GET /api/users
 // @access  Private/Admin
 const getUsers = async (req, res) => {
-  console.log('--- ENTERING getUsers CONTROLLER ---');
   try {
     const users = await User.find({});
     res.json(users);
@@ -108,6 +104,44 @@ const verifyArtisan = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
+const upgradeToArtisan = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      const { shopName, location } = req.body;
+      if (!shopName || !location) {
+        return res.status(400).json({ message: 'Shop name and location are required.' });
+      }
+
+      user.isArtisan = true;
+      user.artisanDetails = {
+        shopName,
+        location,
+        verified: false, // Artisans who upgrade still need admin verification
+      };
+
+      const updatedUser = await user.save();
+      
+      // Send back the full user profile with a new token
+      res.json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        isAdmin: updatedUser.isAdmin,
+        isArtisan: updatedUser.isArtisan,
+        artisanDetails: updatedUser.artisanDetails,
+        token: generateToken(updatedUser._id), // Generate a new token with updated roles
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -124,4 +158,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { authUser, registerUser, getUserProfile, getUsers, verifyArtisan, deleteUser };
+export { authUser, registerUser, getUserProfile, getUsers, verifyArtisan, deleteUser, upgradeToArtisan };

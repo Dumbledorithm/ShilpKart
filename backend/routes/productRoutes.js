@@ -12,21 +12,20 @@ import {
 } from '../controllers/productController.js';
 import { protect, artisan, admin } from '../middleware/authMiddleware.js';
 
-// --- Public Routes ---
+//  Public Routes 
 router.route('/').get(getProducts);
 
-// --- Admin Routes (Specific routes first) ---
+//Admin Routes
 router.route('/all').get(protect, admin, getAllProducts);
 router.route('/:id/approve').put(protect, admin, approveProduct);
+router.route('/:id').get(getProductById);
 
-// --- Artisan Routes ---
+//Artisan Routes
 router.route('/myproducts').get(protect, artisan, getMyProducts);
 router.route('/').post(protect, artisan, createProduct);
 
-// --- Dynamic public route LAST ---
-router.route('/:id').get(getProductById);
 
-// --- Dynamic artisan routes ---
+
 router.route('/:id')
   .put(protect, artisan, updateProduct)
   .delete(protect, admin, deleteProduct);

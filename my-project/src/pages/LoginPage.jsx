@@ -1,16 +1,40 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'; // Import useEffect
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'; // Import useSearchParams
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { loginUser } from '../api';
+import { loginUser,fetchUserProfile } from '../api';
+import { Chrome } from 'lucide-react';
 
 const LoginPage = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams(); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const token = searchParams.get('token');
+    if (token) {
+      const handleGoogleRedirect = async () => {
+        try {
+          localStorage.setItem('userInfo', JSON.stringify({ token }));
+          const { data: userProfile } = await fetchUserProfile();
+          const fullUserData = { ...userProfile, token };
+          onLoginSuccess(fullUserData);
+          
+          // 4. Finally, navigate to the homepage.
+          navigate('/');
+        } catch (e) {
+          setError('Could not fetch user profile after Google login.');
+          localStorage.removeItem('userInfo'); // Clean up on failure
+        }
+      };
+      handleGoogleRedirect();
+    }
+  }, [searchParams, onLoginSuccess, navigate]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,6 +82,24 @@ const LoginPage = ({ onLoginSuccess }) => {
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <Button type="submit" className="w-full">Sign in</Button>
+            
+            <div className="relative w-full">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <a href="http://localhost:5001/api/auth/google" className="w-full">
+              <Button variant="outline" className="w-full" type="button">
+                <Chrome className="mr-2 h-4 w-4" />
+                Google
+              </Button>
+            </a>
+
             <div className="text-center text-sm">
               Don't have an account?{' '}
               <Link to="/signup" className="underline">

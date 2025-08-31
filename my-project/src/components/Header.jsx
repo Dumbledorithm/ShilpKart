@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ShoppingCart, User as UserIcon, LogOut, LayoutDashboard, ShieldCheck } from 'lucide-react';
+import SearchBox from './SearchBox';
 
 const Header = ({ cartItemCount, user, onLogout }) => {
   const navigate = useNavigate();
@@ -19,6 +20,10 @@ const Header = ({ cartItemCount, user, onLogout }) => {
           <ShoppingCart className="h-8 w-8 text-primary" />
           <span>ShilpKart</span>
         </Link>
+
+        <div className="hidden md:flex flex-grow justify-center">
+          <SearchBox />
+        </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
           <Link to="/cart">
@@ -40,21 +45,16 @@ const Header = ({ cartItemCount, user, onLogout }) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuLabel>Hi, {user.name.split(' ')[0]}</DropdownMenuLabel>
+                <DropdownMenuLabel>Hi, {user?.name?.split(' ')[0]}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to="/my-orders">My Orders</Link>
                 </DropdownMenuItem>
-                {user.isAdmin && (
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard/admin">Admin Panel</Link>
-                  </DropdownMenuItem>
-                )}
-                {user.isArtisan && !user.isAdmin && (
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard/artisan">Artisan Dashboard</Link>
-                  </DropdownMenuItem>
-                )}
+              {user.isAdmin && <DropdownMenuItem asChild><Link to="/dashboard/admin">Admin Panel</Link></DropdownMenuItem>}
+              {user.isArtisan && !user.isAdmin && <DropdownMenuItem asChild><Link to="/dashboard/artisan">Artisan Dashboard</Link></DropdownMenuItem>}
+              {!user.isArtisan && !user.isAdmin && (
+                <DropdownMenuItem asChild><Link to="/become-artisan">Become a Seller</Link></DropdownMenuItem>
+              )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogoutClick} className="text-destructive">
                   Logout

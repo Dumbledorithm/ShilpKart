@@ -25,7 +25,6 @@ const HomePage = () => {
     const loadProducts = async () => {
       try {
         setLoading(true);
-        // We fetch more products than needed for the grid to have fallbacks
         const { data } = await fetchProducts(keyword, pageNumber);
         setProducts(data.products);
       } catch (err) {
@@ -36,6 +35,13 @@ const HomePage = () => {
     };
     loadProducts();
   }, [keyword, pageNumber]);
+
+  const handleExploreClick = () => {
+    const productsSection = document.getElementById('featured-collections');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8">
@@ -52,7 +58,7 @@ const HomePage = () => {
           <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8">
             Explore authentic crafts from talented artisans across the nation.
           </p>
-          <Button size="lg">Explore Crafts</Button>
+          <Button size="lg" onClick={handleExploreClick}>Explore Crafts</Button>
         </div>
       </section>
        <div className="mt-8">
@@ -60,7 +66,7 @@ const HomePage = () => {
       </div>
 
       {/* Products Section */}
-      <div className="mt-12">
+      <div id="featured-collections" className="mt-12">
         <h2 className="text-3xl font-bold tracking-tight text-foreground mb-8 text-center">
           Featured Collections
         </h2>

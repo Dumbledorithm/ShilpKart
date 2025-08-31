@@ -12,6 +12,8 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
+export const fetchUserProfile = () => API.get('/users/profile');
+
 // --- Product APIs ---
 
 export const fetchProducts = (keyword = '', pageNumber = 1) => API.get(`/products?keyword=${keyword}&pageNumber=${pageNumber}`);
@@ -30,6 +32,7 @@ export const fetchMyProducts = () => API.get('/products/myproducts');
 export const createProduct = (productData) => API.post('/products', productData);
 export const updateProduct = (id, productData) => API.put(`/products/${id}`, productData);
 export const deleteProduct = (id) => API.delete(`/products/${id}`);
+export const becomeArtisan = (artisanData) => API.put('/users/profile/become-artisan', artisanData);
 
 // --- NEW: Admin APIs ---
 export const fetchAllUsers = () => API.get('/users');

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const CartPage = ({ cart, onUpdateQuantity, onRemoveItem }) => {
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const shippingPrice = subtotal > 1000 ? 0 : 100; // Example shipping logic
+  const shippingPrice = subtotal > 1000 ? 0 : 100;
   const total = subtotal + shippingPrice;
 
   return (

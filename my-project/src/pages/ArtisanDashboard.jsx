@@ -91,9 +91,11 @@ const ArtisanDashboard = ({ user }) => {
                     <Badge variant={product.isApproved ? 'default' : 'secondary'} className="bg-primary/10 text-primary hover:bg-primary/20">
                       {product.isApproved ? 'Approved' : 'Pending Review'}
                     </Badge>
-                    <Button variant="ghost" size="icon" disabled>
+                    <Link to={`/dashboard/artisan/edit/${product._id}`}>
+                    <Button variant="ghost" size="icon">
                       <Edit className="h-4 w-4" />
                     </Button>
+                  </Link>
                     <Button variant="ghost" size="icon" onClick={() => handleDelete(product._id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
