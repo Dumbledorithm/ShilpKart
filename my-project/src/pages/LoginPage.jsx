@@ -93,7 +93,7 @@ const LoginPage = ({ onLoginSuccess }) => {
                 </span>
               </div>
             </div>
-            <a href="http://localhost:5001/api/auth/google" className="w-full">
+            <a href="https://shilpkart.onrender.com/api/auth/google" className="w-full">
               <Button variant="outline" className="w-full" type="button">
                 <Chrome className="mr-2 h-4 w-4" />
                 Google
