@@ -19,7 +19,11 @@ configurePassport(passport); // --- NEW ---
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: 'https://shilpkart-ten.vercel.app', // Replace with your actual Vercel URL
+  optionsSuccessStatus: 200 
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // --- NEW: Express session middleware ---
