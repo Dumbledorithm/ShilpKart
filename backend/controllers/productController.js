@@ -36,19 +36,6 @@ const getProducts = async (req, res) => {
 // @desc    Fetch single product
 // @route   GET /api/products/:id
 // @access  Public
-const getProductById = async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id);
-    if (product && product.isApproved) {
-      res.json(product);
-    } else {
-      res.status(404).json({ message: 'Product not found or not approved' });
-    }
-  } catch (error) {
-    console.error('ERROR IN getProductById:', error);
-    res.status(500).json({ message: 'Server Error' });
-  }
-};
 
 
 // --- ARTISAN CONTROLLERS ---
@@ -86,6 +73,22 @@ const createProduct = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
+
+const getProductById = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (product && product.isApproved) {
+      res.json(product);
+    } else {
+      res.status(404).json({ message: 'Product not found or not approved' });
+    }
+  } catch (error) {
+    console.error('ERROR IN getProductById:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 
 // @desc    Update a product
 // @route   PUT /api/products/:id
