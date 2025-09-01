@@ -18,6 +18,8 @@ router.route('/').get(getProducts);
 //Admin Routes
 router.route('/all').get(protect, admin, getAllProducts);
 router.route('/:id/approve').put(protect, admin, approveProduct);
+router.route('/myproducts').get(protect, artisan, getMyProducts);
+router.route('/').post(protect, artisan, createProduct);
 router.route('/:id').get(getProductById);
 
 //Artisan Routes
