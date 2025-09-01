@@ -13,6 +13,8 @@ const LoginPage = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  
+  const googleLoginUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'}/auth/google`;
 
   useEffect(() => {
     const token = searchParams.get('token');
@@ -93,7 +95,7 @@ const LoginPage = ({ onLoginSuccess }) => {
                 </span>
               </div>
             </div>
-            <a href="https://shilpkart.onrender.com/api/auth/google" className="w-full">
+            <a href={googleLoginUrl} className="w-full">
               <Button variant="outline" className="w-full" type="button">
                 <Chrome className="mr-2 h-4 w-4" />
                 Google
