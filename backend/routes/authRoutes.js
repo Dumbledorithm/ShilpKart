@@ -13,7 +13,8 @@ router.get(
     // On successful authentication, req.user is populated by Passport.
     // We will redirect the user to the frontend with the token.
     const { user, token } = req.user;
-    res.redirect(`http://localhost:5173/login?token=${token}`);
+    const frontendUrl = process.env.FRONTEND_URL
+    res.redirect(`${frontendUrl}/login?token=${token}`);
   }
 );
 
