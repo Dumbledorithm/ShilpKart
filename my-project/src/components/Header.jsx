@@ -17,7 +17,7 @@ const Header = ({ cartItemCount, user, onLogout }) => {
     <header className="bg-card border-b sticky top-0 z-50">
       <nav className="container mx-auto px-4 sm:px-6 h-20 flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-foreground hover:opacity-80 transition-opacity">
-          <ShoppingCart className="h-8 w-8 text-primary" />
+          <img src="/Vector.svg" alt="Logo" className="h-8 w-8" />
           <span>ShilpKart</span>
         </Link>
 
