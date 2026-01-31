@@ -67,3 +67,12 @@ Create a .env file in the root directory:
 
 ## Live Link
 The website is live at <ins>https://shilpkart-ten.vercel.app/</ins>
+
+
+## Screenshots
+<img width="1905" height="910" alt="image" src="https://github.com/user-attachments/assets/72fc9e6a-5d8a-40b4-a1cf-875a7a65e561" />
+
+
+
+
+
