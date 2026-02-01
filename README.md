@@ -71,6 +71,14 @@ The website is live at <ins>https://shilpkart-ten.vercel.app/</ins>
 
 ## Screenshots
 <img width="1905" height="910" alt="image" src="https://github.com/user-attachments/assets/72fc9e6a-5d8a-40b4-a1cf-875a7a65e561" />
+<img width="1900" height="791" alt="image" src="https://github.com/user-attachments/assets/38ede7a8-b1ba-410f-b176-da5fb2e0dce1" />
+<img width="1896" height="799" alt="image" src="https://github.com/user-attachments/assets/b4fa4e49-c9e7-4014-96b5-63501741479d" />
+<img width="1919" height="800" alt="image" src="https://github.com/user-attachments/assets/45807161-7867-45f9-b03d-cf22e33197cc" />
+<img width="1898" height="907" alt="image" src="https://github.com/user-attachments/assets/bfb80530-f803-4c5b-b809-984703acdaec" />
+<img width="1919" height="803" alt="image" src="https://github.com/user-attachments/assets/aa3c8190-e1fd-4d5f-8715-5f874aecbeca" />
+
+
+
 
 
 
